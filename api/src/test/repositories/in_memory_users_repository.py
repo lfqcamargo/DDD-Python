@@ -36,7 +36,7 @@ class InMemoryUsersRepository(UsersRepository):
 
         self.items.append(user)
 
-    def find_by_id(self, id: int) -> User:
+    def find_by_id(self, id: int) -> User | None:
         """
         Finds a user by their unique ID.
 
@@ -46,9 +46,10 @@ class InMemoryUsersRepository(UsersRepository):
         Returns:
             User: The user entity if found, or None if no user exists with the given ID.
         """
+        
         return next((user for user in self.items if user.id == id), None)
 
-    def find_by_email(self, email: str) -> User:
+    def find_by_email(self, email: str) -> User | None:
         """
         Finds a user by their email address.
 
@@ -60,7 +61,7 @@ class InMemoryUsersRepository(UsersRepository):
         """
         return next((user for user in self.items if user.email == email), None)
 
-    def find_by_nickname(self, nickname: str) -> User:
+    def find_by_nickname(self, nickname: str) -> User | None:
         """
         Finds a user by their nickname.
 

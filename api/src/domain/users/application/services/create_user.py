@@ -1,6 +1,8 @@
-from typing import TypedDict
+from typing import TypedDict, Union
 from src.domain.users.application.repositories.users_repository import UsersRepository
 from src.domain.users.enterprise.entities.user import User
+from src.core.either import left, right, Either
+from src.core.errors.already_exists_error import AlreadyExistsError
 
 class CreateUserServiceRequest(TypedDict):
     """
@@ -36,7 +38,7 @@ class CreateUserService():
         """
         self.users_repository = users_repository
 
-    def execute(self, data: CreateUserServiceRequest) -> None:
+    def execute(self, data: CreateUserServiceRequest) -> Either[Union[AlreadyExistsError], None]:
         """
         Executes the process of creating a new user.
 
@@ -47,11 +49,22 @@ class CreateUserService():
             data (CreateUserServiceRequest): The data required to create a user.
 
         Returns:
-            None
+            Either[Union[AlreadyExistsError, ResourceNotFoundError], None]:
+                - Left: An error if the email or nickname already exists.
+                - Right: None if the user is successfully created.
         """
+        user_email = self.users_repository.find_by_email(data['email'])
+
+        if user_email:
+            return left(AlreadyExistsError("Email already exists."))
+
+        user_nickname = self.users_repository.find_by_nickname(data['nickname'])
+
+        if user_nickname:
+            return left(AlreadyExistsError("Nickname already exists."))
+
         user = User.create(data)
 
-        # Adiciona o usuário ao repositório
         self.users_repository.create(user)
 
-        return True
+        return right(None)
