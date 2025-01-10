@@ -1,8 +1,11 @@
+from uuid import UUID
 from abc import ABC, abstractmethod
+from src.domain.users.enterprise.entities.user import User
 
-class UsersRepository(ABC):
+
+class UsersInterface(ABC):
     """
-    Abstract base class for user repository.
+    Abstract base class for user interface.
 
     This class defines the contract for any repository implementation
     that handles user-related operations such as creating, finding,
@@ -10,7 +13,7 @@ class UsersRepository(ABC):
     """
 
     @abstractmethod
-    def create(self, user):
+    def create(self, user: User) -> None:
         """
         Abstract method to create a new user.
 
@@ -22,7 +25,7 @@ class UsersRepository(ABC):
         """
 
     @abstractmethod
-    def find_by_id(self, id):
+    def find_by_id(self, id: UUID) -> User | None:
         """
         Abstract method to find a user by their unique ID.
 
@@ -37,7 +40,7 @@ class UsersRepository(ABC):
         """
 
     @abstractmethod
-    def find_by_email(self, email):
+    def find_by_email(self, email: str) -> User | None:
         """
         Abstract method to find a user by their email address.
 
@@ -52,7 +55,7 @@ class UsersRepository(ABC):
         """
 
     @abstractmethod
-    def find_by_nickname(self, nickname):
+    def find_by_nickname(self, nickname: str) -> User | None:
         """
         Abstract method to find a user by their nickname.
 

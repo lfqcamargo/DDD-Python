@@ -1,12 +1,15 @@
-from typing import Optional, Dict
+from uuid import uuid4
+from typing import Optional, Dict, Any, cast
 from faker import Faker
 from src.domain.users.enterprise.entities.user import User
 from src.domain.users.enterprise.entities.user import UserProps
-
+from src.domain.users.enterprise.entities.user import UserRole
 
 faker = Faker()
+
+
 # pylint: disable=redefined-builtin
-def make_user(override: Optional[Dict] = None, id: Optional[int] = None) -> User:
+def make_user(override: Optional[Dict[str, Any]] = None) -> User:
     """
     Creates a User object with default values, allowing overrides for specific attributes.
 
@@ -21,12 +24,12 @@ def make_user(override: Optional[Dict] = None, id: Optional[int] = None) -> User
         User: The created User instance with the provided or default properties.
     """
     default_props: UserProps = {
-        "id": id or 0,  # Default ID is 0
+        "id": uuid4(),
         "email": faker.email(),
         "name": faker.name(),
         "nickname": faker.user_name(),
         "password": faker.password(),
-        "role": faker.random_int(min=1, max=2),  # Random role between 1 and 2
+        "role": UserRole.MANAGER,  # Default role is USER
         "active": faker.boolean(),
         "profile_photo": None,
         "created_at": faker.date_time(),
@@ -34,7 +37,7 @@ def make_user(override: Optional[Dict] = None, id: Optional[int] = None) -> User
     }
 
     # Merge default properties with any overrides provided
-    final_props = {**default_props, **(override or {})}
+    final_props: UserProps = cast(UserProps, {**default_props, **(override or {})})
 
     # Create the user instance
     user = User.create(final_props)

@@ -1,7 +1,9 @@
+# pylint: skip-file
 from typing import Generic, TypeVar, Union
 
 L = TypeVar("L")
 R = TypeVar("R")
+
 
 class Left(Generic[L, R]):
     def __init__(self, value: L) -> None:
@@ -26,6 +28,7 @@ class Right(Generic[L, R]):
 
 
 Either = Union[Left[L, R], Right[L, R]]
+
 
 def left(value: L) -> Either[L, R]:
     return Left(value)

@@ -24,6 +24,7 @@ disable=raw-checker-failed,
         R0903, #too-few-public-methods
         duplicate-code,
         W0622, #redefined-builtin
+        W0621, #redefined-outer-name
 
 # Files or directories to be skipped. They should be base names, not paths.
 ignore=
