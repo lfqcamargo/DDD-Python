@@ -74,8 +74,7 @@ class CreateUserService:
 
         if user_nickname:
             return left(AlreadyExistsError("Nickname already exists."))
-        
-        
+
         """
         if data["role"] != UserRole.MANAGER:
             print("CHEGOU NO FINAL DO SERVIÇO")
@@ -89,10 +88,9 @@ class CreateUserService:
             if not user_authenticate or not user_authenticate.is_admin():
                 return left(ResourNotFoundError("User admin not found."))
         """
-        
+
         user = User.create(data)
 
-        
         self.users_repository.create(user)
 
         return right(None)

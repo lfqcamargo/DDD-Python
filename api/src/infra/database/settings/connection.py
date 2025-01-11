@@ -28,5 +28,4 @@ class DBConnectionHanlder:
             self.session.close()
 
 
-
 db_connection_handler = DBConnectionHanlder()
