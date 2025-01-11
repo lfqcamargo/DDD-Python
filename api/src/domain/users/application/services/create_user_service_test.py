@@ -1,5 +1,5 @@
 import pytest
-from src.domain.users.application.services.create_user import CreateUserService
+from src.domain.users.application.services.create_user_service import CreateUserService
 from src.test.repositories.in_memory_users_repository import InMemoryUsersRepository
 from src.test.factories.make_user import make_user
 from src.core.errors.already_exists_error import AlreadyExistsError
@@ -94,7 +94,8 @@ def test_not_create_user_nickname(user_service_fixture):
 
 
 def test_not_create_user_not_manager_if_not_admin(user_service_fixture):
-    """It should not be possible to create a user other than a client without being an administrator"""
+    """It should not be possible to create a user other than a client
+    without being an administrator"""
     create_user_service, users_repository = user_service_fixture
 
     user = make_user(override={"role": UserRole.ADMIN})

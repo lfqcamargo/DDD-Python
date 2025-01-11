@@ -64,6 +64,7 @@ class CreateUserService:
                 - Left: An error if the email or nickname already exists.
                 - Right: None if the user is successfully created.
         """
+        print("CHEGOU NO SERVIÇO")
         user_email = self.users_repository.find_by_email(data["email"])
 
         if user_email:
@@ -73,10 +74,13 @@ class CreateUserService:
 
         if user_nickname:
             return left(AlreadyExistsError("Nickname already exists."))
-
+        
+        
+        """
         if data["role"] != UserRole.MANAGER:
+            print("CHEGOU NO FINAL DO SERVIÇO")
             authenticate_user = data.get("authenticate_user")
-            
+
             if not authenticate_user:
                 return left(ResourNotFoundError("User admin not found."))
 
@@ -84,9 +88,11 @@ class CreateUserService:
 
             if not user_authenticate or not user_authenticate.is_admin():
                 return left(ResourNotFoundError("User admin not found."))
-
+        """
+        
         user = User.create(data)
 
+        
         self.users_repository.create(user)
 
         return right(None)

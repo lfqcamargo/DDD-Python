@@ -4,5 +4,7 @@
   },
   "editor.formatOnSave": true,
   "editor.tabSize": 4,
+  /*
   "python.analysis.typeCheckingMode": "strict",
+  */
 }

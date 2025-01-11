@@ -33,6 +33,9 @@ class UserProps(TypedDict):
 
 
 class CreateUserProps(TypedDict):
+    """_
+    Defines create user
+    """
     email: str
     name: str
     nickname: str
