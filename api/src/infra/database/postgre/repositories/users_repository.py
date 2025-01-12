@@ -1,7 +1,7 @@
 from uuid import UUID
 from src.domain.users.enterprise.entities.user import User
-from src.infra.database.models.user_model import UserModel
-from src.infra.database.mappers.user_mapper import SQLAlchemyUserMapper
+from src.infra.database.postgre.models.user_model import UserModel
+from src.infra.database.postgre.mappers.user_mapper import SQLAlchemyUserMapper
 from src.domain.users.application.interfaces.users_interface import UsersInterface
 
 

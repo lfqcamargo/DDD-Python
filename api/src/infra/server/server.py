@@ -1,7 +1,7 @@
 import logging
 from flask import Flask
 from flask_cors import CORS
-from src.infra.database.settings.connection import db_connection_handler
+from src.infra.database.postgre.settings.connection import db_connection_handler
 from src.infra.routes.user_routes import users_route_bp
 
 

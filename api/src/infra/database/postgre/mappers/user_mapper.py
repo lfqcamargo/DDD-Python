@@ -1,6 +1,6 @@
 from typing import Dict, Any
 from src.domain.users.enterprise.entities.user import User
-from src.infra.database.models.user_model import UserModel
+from src.infra.database.postgre.models.user_model import UserModel
 
 
 class SQLAlchemyUserMapper:

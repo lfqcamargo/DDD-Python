@@ -4,7 +4,7 @@ from uuid import uuid4
 from sqlalchemy import Column, String, Integer, Boolean, LargeBinary, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 
-from src.infra.database.settings.base import Base
+from src.infra.database.postgre.settings.base import Base
 
 
 class UserModel(Base):

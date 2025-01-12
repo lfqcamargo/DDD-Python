@@ -1,4 +1,4 @@
-from src.infra.database.models.user_model import UserModel
+from src.infra.database.postgre.models.user_model import UserModel
 
 
 class UserPresenter:

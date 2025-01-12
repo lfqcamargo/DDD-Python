@@ -34,7 +34,7 @@ def test_create_user(user_service_fixture):
             "name": user.name,
             "nickname": user.nickname,
             "password": user.password,
-            "role": UserRole.MANAGER,
+            "role": UserRole.CUSTOMER,
         }
     )
 
@@ -58,7 +58,7 @@ def test_not_create_user_email(user_service_fixture):
             "name": user.name,
             "nickname": "lfqcamargo",
             "password": user.password,
-            "role": UserRole.MANAGER,
+            "role": UserRole.CUSTOMER,
         }
     )
 
@@ -83,7 +83,7 @@ def test_not_create_user_nickname(user_service_fixture):
             "name": user.name,
             "nickname": user.nickname,
             "password": user.password,
-            "role": UserRole.MANAGER,
+            "role": UserRole.CUSTOMER,
         }
     )
 
