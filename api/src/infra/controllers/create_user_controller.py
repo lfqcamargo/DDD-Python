@@ -8,29 +8,7 @@ from src.infra.controllers.interfaces.create_user_controller_interface import (
 
 
 class CreateUserController(CreateUserControllerInterface):
-    """
-    Controller for handling user creation requests.
-
-    Attributes:
-        create_user_service (CreateUserService): The service responsible for
-            the user creation logic.
-
-    Methods:
-        handle(user_data: CreateUserServiceRequest) -> None:
-            Processes the user creation request. If the operation fails, it raises
-            one of the following exceptions:
-            - AlreadyExistsError: If the email or nickname is already in use.
-            - ResourceNotFoundError: If a required resource (e.g., admin user) is not found.
-    """
-
     def __init__(self, create_user_service: CreateUserService) -> None:
-        """
-        Initializes the CreateUserController with the given user creation service.
-
-        Args:
-            create_user_service (CreateUserService): The service responsible for
-                creating users in the system.
-        """
         self.__create_user_service = create_user_service
 
     def handle(self, user_data: CreateUserServiceRequest) -> None:

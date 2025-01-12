@@ -5,6 +5,7 @@ from src.test.factories.make_user import make_user
 from src.core.errors.already_exists_error import AlreadyExistsError
 from src.core.errors.resource_not_found_error import ResourNotFoundError
 from src.domain.users.enterprise.entities.user import UserRole
+from src.test.cryptography.fake_password import FakerPassword
 
 
 @pytest.fixture
@@ -16,7 +17,8 @@ def user_service_fixture() -> tuple[CreateUserService, InMemoryUsersRepository]:
         CreateUserService: A new instance of the service for each test.
     """
     users_repository = InMemoryUsersRepository()
-    create_user_service = CreateUserService(users_repository)
+    faker_password = FakerPassword()
+    create_user_service = CreateUserService(users_repository, faker_password)
     return create_user_service, users_repository
 
 

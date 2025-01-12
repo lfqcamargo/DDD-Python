@@ -6,6 +6,7 @@ from src.domain.users.enterprise.entities.user import UserRole
 from src.core.either import left, right, Either
 from src.core.errors.already_exists_error import AlreadyExistsError
 from src.core.errors.resource_not_found_error import ResourNotFoundError
+from src.domain.users.application.interfaces.password_interface import PasswordInterface
 
 
 class CreateUserServiceRequest(TypedDict):
@@ -37,7 +38,9 @@ class CreateUserService:
         users_repository (UserRepository): The repository for managing user persistence.
     """
 
-    def __init__(self, users_repository: UsersInterface) -> None:
+    def __init__(
+        self, users_repository: UsersInterface, password_driver: PasswordInterface
+    ) -> None:
         """
         Initializes the CreateUserService with the specified user repository.
 
@@ -46,6 +49,7 @@ class CreateUserService:
             persistence.
         """
         self.users_repository = users_repository
+        self.password_driver = password_driver
 
     def execute(
         self, data: CreateUserServiceRequest
@@ -64,29 +68,58 @@ class CreateUserService:
                 - Left: An error if the email or nickname already exists.
                 - Right: None if the user is successfully created.
         """
-        user_email = self.users_repository.find_by_email(data["email"])
+
+        validate_email = self.__find_user_email(data["email"])
+        if validate_email.is_left():
+            return validate_email
+
+        validate_nickname = self.__find_user_nickname(data["nickname"])
+        if validate_nickname.is_left():
+            return validate_nickname
+
+        validate_role = self.__validate_role(
+            data.get("authenticate_user"), data["role"]
+        )
+        if validate_role.is_left():
+            return validate_role
+
+        data["password"] = self.password_driver.encrypt_password(data["password"])
+        result = self.__create_user(data)
+
+        return result
+
+    def __find_user_email(self, email: str) -> Either[AlreadyExistsError, None]:
+        user_email = self.users_repository.find_by_email(email)
 
         if user_email:
             return left(AlreadyExistsError("Email already exists.", "email"))
 
-        user_nickname = self.users_repository.find_by_nickname(data["nickname"])
+        return right(user_email)
+
+    def __find_user_nickname(self, nickname: str) -> Either[AlreadyExistsError, None]:
+        user_nickname = self.users_repository.find_by_nickname(nickname)
 
         if user_nickname:
             return left(AlreadyExistsError("Nickname already exists.", "nickname"))
 
-        if data["role"] != UserRole.CUSTOMER:
-            authenticate_user = data.get("authenticate_user")
+        return right(user_nickname)
 
-            if not authenticate_user:
+    def __validate_role(
+        self, authenticate_id: UUID = None, role: int = None
+    ) -> Either[ResourNotFoundError, None]:
+        if role is not None and role != UserRole.CUSTOMER:
+            if not authenticate_id:
                 return left(ResourNotFoundError("User admin not found.", "user"))
 
-            user_authenticate = self.users_repository.find_by_id(authenticate_user)
+            user_authenticate = self.users_repository.find_by_id(authenticate_id)
 
             if not user_authenticate or not user_authenticate.is_admin():
                 return left(ResourNotFoundError("User admin not found.", "user"))
 
-        user = User.create(data)
+        return right(None)
 
+    def __create_user(self, data) -> Either[None, None]:
+        user = User.create(data)
         self.users_repository.create(user)
 
         return right(None)
