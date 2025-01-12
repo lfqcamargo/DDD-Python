@@ -7,6 +7,7 @@ class SQLAlchemyUserMapper:
     """
     Mapper User
     """
+
     @staticmethod
     def to_domain(raw: UserModel) -> User:
         """
@@ -44,7 +45,7 @@ class SQLAlchemyUserMapper:
             Dict[str, Any]: A dictionary suitable for creating a SQLAlchemy UserModel.
         """
         return {
-            "id": user.id.id,
+            "id": user.id,
             "name": user.name,
             "nickname": user.nickname,
             "email": user.email,

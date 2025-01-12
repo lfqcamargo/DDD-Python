@@ -1,11 +1,13 @@
 from src.infra.database.models.user_model import UserModel
 
+
 class UserPresenter:
     """
     Presenters Users
     """
+
     @staticmethod
-    def toHTTP(user: UserModel):
+    def to_http(user: UserModel):
         """
         Presenter to HTTP
         """
@@ -18,5 +20,5 @@ class UserPresenter:
             "active": user.active,
             "profile_photo": user.profile_photo,
             "created_at": user.created_at,
-            "last_login": user.last_login
+            "last_login": user.last_login,
         }

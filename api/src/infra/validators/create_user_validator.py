@@ -17,6 +17,7 @@ def create_user_validator(http_request: HttpRequest) -> None:
         """
         Validate Body Schema
         """
+
         email: EmailStr
         name: str = Field(..., min_length=3, max_length=50)
         nickname: str = Field(..., min_length=3, max_length=30)

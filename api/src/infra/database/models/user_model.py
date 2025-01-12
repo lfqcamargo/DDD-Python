@@ -1,11 +1,29 @@
+from datetime import datetime
+from uuid import uuid4
+
 from sqlalchemy import Column, String, Integer, Boolean, LargeBinary, DateTime
 from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime
+
 from src.infra.database.settings.base import Base
-from uuid import uuid4
 
 
 class UserModel(Base):
+    """
+    Represents the User entity in the database.
+
+    Attributes:
+        id (UUID): Unique identifier for the user.
+        email (str): The email address of the user.
+        name (str): The full name of the user.
+        nickname (str): The nickname or username of the user.
+        password (str): The hashed password of the user.
+        role (int): The role of the user (e.g., 1 for admin, 3 for regular users).
+        active (bool): Indicates if the user's account is active.
+        profile_photo (bytes): Binary data for the user's profile photo.
+        created_at (datetime): The timestamp when the user was created.
+        last_login (datetime): The timestamp of the user's last login.
+    """
+
     __tablename__ = "users"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, nullable=False)

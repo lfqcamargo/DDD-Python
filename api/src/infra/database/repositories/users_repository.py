@@ -1,7 +1,9 @@
 from uuid import UUID
 from src.domain.users.enterprise.entities.user import User
 from src.infra.database.models.user_model import UserModel
+from src.infra.database.mappers.user_mapper import SQLAlchemyUserMapper
 from src.domain.users.application.interfaces.users_interface import UsersInterface
+
 
 class UsersRepository(UsersInterface):
     """
@@ -25,22 +27,11 @@ class UsersRepository(UsersInterface):
             user (User): The user entity to persist.
         """
         with self.__db_connection as database:
-            user_model = UserModel(
-                id=user.id,
-                email=user.email,
-                name=user.name,
-                nickname=user.nickname,
-                password=user.password,
-                role=user.role,
-                active=user.active,
-                profile_photo=user.profile_photo,
-                created_at=user.created_at,
-                last_login=user.last_login,
-            )
+            user_model_data = SQLAlchemyUserMapper.to_sqlalchemy(user)
+            user_model = UserModel(**user_model_data)
+
             database.session.add(user_model)
-            print("DEPOIS DO ADD")
             database.session.commit()
-            print("COMMIT")
 
     def find_by_id(self, id: UUID) -> User | None:
         """
@@ -69,7 +60,9 @@ class UsersRepository(UsersInterface):
             User | None: The user entity if found, otherwise None.
         """
         with self.__db_connection as database:
-            user_model = database.session.query(UserModel).filter_by(email=email).first()
+            user_model = (
+                database.session.query(UserModel).filter_by(email=email).first()
+            )
             if user_model:
                 return self.__to_domain(user_model)
             return None
@@ -85,7 +78,9 @@ class UsersRepository(UsersInterface):
             User | None: The user entity if found, otherwise None.
         """
         with self.__db_connection as database:
-            user_model = database.session.query(UserModel).filter_by(nickname=nickname).first()
+            user_model = (
+                database.session.query(UserModel).filter_by(nickname=nickname).first()
+            )
             if user_model:
                 return self.__to_domain(user_model)
             return None

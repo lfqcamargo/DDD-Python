@@ -6,6 +6,9 @@ from src.infra.views.create_user_views import CreateUserView
 
 
 def create_user_composer():
+    """
+    Compose to create user
+    """
     model = UsersRepository(db_connection_handler)
     service = CreateUserService(model)
     controller = CreateUserController(service)
