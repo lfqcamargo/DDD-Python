@@ -70,56 +70,52 @@ class CreateUserService:
         """
 
         validate_email = self.__find_user_email(data["email"])
-        if validate_email.is_left():
-            return validate_email
+        if validate_email is not None:
+            return left(AlreadyExistsError("Email already exists.", "email"))
 
         validate_nickname = self.__find_user_nickname(data["nickname"])
-        if validate_nickname.is_left():
-            return validate_nickname
+        if validate_nickname is not None:
+            return left(AlreadyExistsError("Nickname already exists.", "nickname"))
 
         validate_role = self.__validate_role(
             data.get("authenticate_user"), data["role"]
         )
-        if validate_role.is_left():
-            return validate_role
+        if not validate_role:
+            return left(ResourNotFoundError("User admin not found.", "user"))
 
         data["password"] = self.password_driver.encrypt_password(data["password"])
-        result = self.__create_user(data)
 
-        return result
-
-    def __find_user_email(self, email: str) -> Either[AlreadyExistsError, None]:
-        user_email = self.users_repository.find_by_email(email)
-
-        if user_email:
-            return left(AlreadyExistsError("Email already exists.", "email"))
-
-        return right(user_email)
-
-    def __find_user_nickname(self, nickname: str) -> Either[AlreadyExistsError, None]:
-        user_nickname = self.users_repository.find_by_nickname(nickname)
-
-        if user_nickname:
-            return left(AlreadyExistsError("Nickname already exists.", "nickname"))
-
-        return right(user_nickname)
-
-    def __validate_role(
-        self, authenticate_id: UUID = None, role: int = None
-    ) -> Either[ResourNotFoundError, None]:
-        if role is not None and role != UserRole.CUSTOMER:
-            if not authenticate_id:
-                return left(ResourNotFoundError("User admin not found.", "user"))
-
-            user_authenticate = self.users_repository.find_by_id(authenticate_id)
-
-            if not user_authenticate or not user_authenticate.is_admin():
-                return left(ResourNotFoundError("User admin not found.", "user"))
-
-        return right(None)
-
-    def __create_user(self, data) -> Either[None, None]:
         user = User.create(data)
         self.users_repository.create(user)
 
         return right(None)
+
+    def __find_user_email(self, email: str) -> Optional[User]:
+        user_email = self.users_repository.find_by_email(email)
+
+        if user_email:
+            return user_email
+
+        return None
+
+    def __find_user_nickname(self, nickname: str) -> Optional[User]:
+        user_nickname = self.users_repository.find_by_nickname(nickname)
+
+        if user_nickname:
+            return user_nickname
+
+        return None
+
+    def __validate_role(
+        self, authenticate_id: UUID = None, role: int = None
+    ) -> False | True:
+        if role is not None and role != UserRole.CUSTOMER:
+            if not authenticate_id:
+                return False
+
+            user_authenticate = self.users_repository.find_by_id(authenticate_id)
+
+            if not user_authenticate or not user_authenticate.is_admin():
+                return False
+
+        return True

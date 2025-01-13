@@ -1,3 +1,4 @@
+import uuid
 from uuid import UUID
 from typing import List
 from src.domain.users.enterprise.entities.user import User
@@ -33,6 +34,9 @@ class InMemoryUsersRepository(UsersInterface):
         Args:
             user (User): The user entity to be created.
         """
+        if user.id is None:  # Se o ID não estiver definido
+            user.id = uuid.uuid4()
+        
         self.items.append(user)
 
     def find_by_id(self, id: UUID) -> User | None:
