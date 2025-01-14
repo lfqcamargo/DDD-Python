@@ -21,6 +21,7 @@ class SQLAlchemyUserMapper:
         """
         return User.create(
             {
+                "id": raw.id,
                 "name": raw.name,
                 "nickname": raw.nickname,
                 "email": raw.email,

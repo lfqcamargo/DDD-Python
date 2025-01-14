@@ -39,5 +39,5 @@ class JwtHandler:
         Returns:
             Dict: The decoded payload of the token.
         """
-        token_information = jwt.decode(token, key="minhaChave", algorithms="HS256")
+        token_information = jwt.decode(token, jwt_infos["KEY"], algorithms=jwt_infos["ALGORITHM"])
         return token_information

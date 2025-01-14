@@ -114,9 +114,10 @@ class User:
         Returns:
             User: A new User instance.
         """
+        user_id = props.get("id") or uuid4()
 
         user: UserProps = {
-            "id": uuid4(),
+            "id": user_id,
             "email": props["email"],
             "name": props["name"],
             "nickname": props["nickname"],

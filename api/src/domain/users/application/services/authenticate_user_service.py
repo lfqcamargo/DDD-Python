@@ -23,7 +23,6 @@ class AuthenticateUserService:
         self, email: str, password: str
     ) -> Either[Union[WrongCredentialsError], None]:
         user = self.__find_user(email)
-
         
         if user is None:
             return left(WrongCredentialsError())

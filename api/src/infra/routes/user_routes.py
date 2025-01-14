@@ -3,6 +3,7 @@ from src.infra.views.http_types.http_request import HttpRequest
 from src.infra.composer.create_user_composer import create_user_composer
 from src.infra.composer.authenticate_user_composer import authenticate_user_composer
 from src.infra.errors.error_handle import handle_errors
+from src.infra.middlewares.auth_wtf import auth_jwt_verify
 
 users_route_bp = Blueprint("user_routes", __name__)
 
@@ -35,3 +36,16 @@ def authenticate_user():
     except Exception as exception:
         http_response = handle_errors(exception)
         return jsonify(http_response.body), http_response.status_code
+
+@users_route_bp.route("/test", methods=["GET"])
+def auth():
+    try:
+        token_information = auth_jwt_verify()
+        http_request = HttpRequest(
+            token_infos=token_information,
+            headers=request.headers
+            )
+        
+        return jsonify(), 200
+    except Exception as exception:
+        return jsonify("Falha"), 500

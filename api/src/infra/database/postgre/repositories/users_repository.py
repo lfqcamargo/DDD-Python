@@ -64,7 +64,7 @@ class UsersRepository(UsersInterface):
                 database.session.query(UserModel).filter_by(email=email).first()
             )
             if user_model:
-                return self.__to_domain(user_model)
+                return SQLAlchemyUserMapper().to_domain(user_model)
             return None
 
     def find_by_nickname(self, nickname: str) -> User | None:
