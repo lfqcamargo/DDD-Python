@@ -1,6 +1,7 @@
 from pydantic import ValidationError
 from src.core.errors.already_exists_error import AlreadyExistsError
 from src.core.errors.resource_not_found_error import ResourNotFoundError
+from src.core.errors.wrong_credentials import WrongCredentialsError
 from src.infra.views.http_types.http_response import HttpResponse
 from src.infra.errors.error_types.http_bad_request import HttpBadRequestError
 from src.infra.errors.error_types.http_not_found import HttpNotFoundError
@@ -32,6 +33,12 @@ def handle_errors(error: Exception) -> HttpResponse:
             status_code=404,
             body={"errors": [error.to_dict()]},
         )
+        
+    if isinstance(error, WrongCredentialsError):
+        return HttpResponse(
+            status_code=404,
+            body={"errors": [error.to_dict()]},
+        )    
 
     if isinstance(error, ValidationError):
         return HttpResponse(

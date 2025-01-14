@@ -36,7 +36,7 @@ class InMemoryUsersRepository(UsersInterface):
         """
         if user.id is None:  # Se o ID não estiver definido
             user.id = uuid.uuid4()
-        
+
         self.items.append(user)
 
     def find_by_id(self, id: UUID) -> User | None:

@@ -1,5 +1,7 @@
 import pytest
-from src.domain.users.application.services.authenticate_user_service import AuthenticateUserService
+from src.domain.users.application.services.authenticate_user_service import (
+    AuthenticateUserService,
+)
 from src.test.repositories.in_memory_users_repository import InMemoryUsersRepository
 from src.test.cryptography.fake_password import FakerPassword
 from src.infra.drivers.jwt_handler import JwtHandler
@@ -8,7 +10,9 @@ from src.core.errors.resource_not_found_error import ResourNotFoundError
 
 
 @pytest.fixture
-def authenticate_user_service_fixture() -> tuple[AuthenticateUserService, InMemoryUsersRepository]:
+def authenticate_user_service_fixture() -> (
+    tuple[AuthenticateUserService, InMemoryUsersRepository]
+):
     """
     Fixture to initialize the AuthenticateUserService with an InMemoryUsersRepository.
 
@@ -20,6 +24,7 @@ def authenticate_user_service_fixture() -> tuple[AuthenticateUserService, InMemo
     password_handler = FakerPassword()
     service = AuthenticateUserService(user_repository, jwt_handler, password_handler)
     return service, user_repository
+
 
 def test_authenticate_user_success(authenticate_user_service_fixture):
     """
@@ -40,6 +45,7 @@ def test_authenticate_user_success(authenticate_user_service_fixture):
     assert "token" in response
     assert isinstance(response["token"], str)
 
+
 def test_authenticate_user_not_found(authenticate_user_service_fixture):
     """
     Test the AuthenticateUserService when the user is not found.
@@ -53,6 +59,7 @@ def test_authenticate_user_not_found(authenticate_user_service_fixture):
     assert result.is_left()
     assert isinstance(result.value, ResourNotFoundError)
     assert result.value.message == "User not found."
+
 
 def test_authenticate_user_invalid_password(authenticate_user_service_fixture):
     """

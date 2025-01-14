@@ -2,7 +2,7 @@ from uuid import UUID
 from typing import Union, Optional
 from src.domain.users.application.interfaces.users_interface import UsersInterface
 from src.domain.users.enterprise.entities.user import User
-from src.core.errors.resource_not_found_error import ResourNotFoundError
+from src.core.errors.wrong_credentials import WrongCredentialsError
 from src.core.either import left, right, Either
 from src.domain.users.application.interfaces.password_interface import PasswordInterface
 from src.infra.drivers.jwt_handler import JwtHandler
@@ -21,20 +21,21 @@ class AuthenticateUserService:
 
     def execute(
         self, email: str, password: str
-    ) -> Either[Union[ResourNotFoundError], None]:
+    ) -> Either[Union[WrongCredentialsError], None]:
         user = self.__find_user(email)
 
+        
         if user is None:
-            return left(ResourNotFoundError("User not found.", "user"))
+            return left(WrongCredentialsError())
 
         is_password_valid = self.__password_handler.check_password(
             password, user.password
         )
-    
 
         if not is_password_valid:
-            return left(ResourNotFoundError("User not found.", "password"))
+            return left(WrongCredentialsError())
 
+        
         token = self.__create_jwt_token(user.id)
         return right(self.__format_response(email, token))
 

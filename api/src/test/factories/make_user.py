@@ -39,9 +39,11 @@ def make_user(override: Optional[Dict[str, Any]] = None) -> User:
 
     # Merge default properties with any overrides provided
     final_props: UserProps = cast(UserProps, {**default_props, **(override or {})})
-    
+
     encrypter_password = FakerPassword()
-    final_props["password"] = encrypter_password.encrypt_password(final_props["password"])
+    final_props["password"] = encrypter_password.encrypt_password(
+        final_props["password"]
+    )
 
     # Create the user instance
     user = User.create(final_props)
